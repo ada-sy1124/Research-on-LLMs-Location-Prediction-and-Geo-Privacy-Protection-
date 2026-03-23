@@ -1,23 +1,3 @@
-# from huggingface_hub import HfApi
-# import os
-
-# # 确认环境变量是否已设置（可选检查）
-# print("Using token:", "已找到 ✅" if os.getenv("HUGGINGFACE_HUB_TOKEN") else "未找到 ❌")
-
-# api = HfApi()  # 会自动使用系统中的 HUGGINGFACE_HUB_TOKEN
-# info = api.dataset_info("osv5m/osv5m")  # 数据集名称
-
-# # 计算数据集总大小
-# total_bytes = sum(file.size for file in info.siblings if file.size is not None)
-# print(f"📦 数据集总大小：{total_bytes / (1024**3):.2f} GB")
-
-
-# from datasets import load_from_disk
-
-# dataset = load_from_disk("/Applications/Documents/geoai/random_streetview_gemini/YES")
-
-# print("样本数量:", len(dataset))
-
 
 from datasets import load_from_disk
 
