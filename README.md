@@ -1,0 +1,2 @@
+# Exploring-the-Location-Prediction-Capabilities-of-LLMs-and-Research-on-Geo-Privacy-Protection
+Advanced LLMs raise geo-privacy risks by extracting locations from shared photos. Addressing this, we propose a method to assess LLMs' location prediction capabilities and isolate the decisive visual features they rely on. Ultimately, this provides a theoretical basis for developing tools to protect users' geographic privacy
