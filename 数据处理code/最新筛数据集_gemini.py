@@ -94,60 +94,6 @@ def haversine_km(lat1, lon1, lat2, lon2):
     return float(2 * R * np.arcsin(np.sqrt(a)))
 
 
-# def gemini_predict_latlon(client, model, image_obj, prompt):
-#     try:
-#         resp = client.models.generate_content(
-#             model=model,
-#             contents=[image_obj, prompt],
-#             config=types.GenerateContentConfig(temperature=Temperature), 
-#         )
-#         text = resp.text.strip()
-#     except Exception as e:
-#         print(f"API调用错误: {e}")
-#         return 0.0, 0.0, "", [], 0
-
-#     lines = [l.strip() for l in text.splitlines() if l.strip()]
-    
-#     lat_val, lon_val = 0.0, 0.0
-#     reason_text = ""
-#     classes = []
-#     q = 0
-
-#     for line in lines:
-#         if "COORDINATES:" in line.upper(): 
-#             try:
-#                 nums = re.findall(r'-?\d+\.?\d*', line)
-#                 valid_nums = []
-#                 for n in nums:
-#                     try:
-#                         valid_nums.append(float(n))
-#                     except:
-#                         continue
-#                 if len(valid_nums) >= 2:
-#                     lat_val = valid_nums[0]
-#                     lon_val = valid_nums[1]
-#             except Exception as e:
-#                 print(f"坐标解析异常: {line} | Error: {e}")
-
-#         elif line.startswith("REASONING:"):
-#             try:
-#                 parts = line.split("REASONING:", 1)
-#                 if len(parts) > 1:
-#                     reason_text = parts[1].strip()
-#                     for seg in reason_text.split(";"):
-#                         seg = seg.strip()
-#                         if ":" in seg:
-#                             cls, objs_text = seg.split(":", 1)
-#                             cls = cls.strip()
-#                             if cls:
-#                                 classes.append(cls)
-#                             objs = [o.strip() for o in objs_text.split(",") if o.strip()]
-#                             q += len(objs)
-#             except Exception as e:
-#                 print(f"Reasoning解析异常: {line} | Error: {e}")
-
-#     return lat_val, lon_val, reason_text, classes, q
-
 
 def gemini_predict_latlon(client, model, image_obj, prompt):
     '''
