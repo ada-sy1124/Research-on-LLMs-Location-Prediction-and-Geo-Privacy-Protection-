@@ -1,1 +1,0 @@
-/Users/sy1124/Downloads/Documents/geoai/random_streetview

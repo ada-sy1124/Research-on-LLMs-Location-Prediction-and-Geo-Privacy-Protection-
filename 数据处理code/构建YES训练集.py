@@ -149,7 +149,7 @@ def save_chunk(buffer_list, out_dir, chunk_id):
 # 4) 主程序
 # =========================
 def main():
-    client = genai.Client(api_key="AIzaSyDsmN8Zyvu0_MSLT0XMQzcClcDMc4Jlp_E") 
+    client = genai.Client(api_key="") 
     
     print("正在加载数据集...")
     if not os.path.exists(INPUT_DATASET_PATH):
