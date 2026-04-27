@@ -4,39 +4,44 @@ import time
 
 import numpy as np
 from datasets import load_from_disk
-from google import genai
 from PIL import Image
 from tqdm import tqdm
 
 from geoai_pipeline.config import get_env, get_float, get_int, get_path
 from geoai_pipeline.constants import GEO_PROMPT
 from geoai_pipeline.tools.dataset_io import save_chunk
+from geoai_pipeline.tools.genai_client import create_genai_client
 from geoai_pipeline.tools.gemini import gemini_predict_latlon
 from geoai_pipeline.tools.geo import haversine_km
 
 
 def run():
-    api_key = get_env("GEMINI_API_KEY", "AIzaSyAps-SGhvdPnGLWGl2_CNziI6XekSbBrPY")
     gemini_model = get_env("GEMINI_MODEL", "gemini-3-flash-preview")
 
     input_dataset_path = get_path(
-        "AFTER_SAM_INPUT_DATASET_PATH",
-        "./data/YES_NEW_afterSAM",
+        "MASK2_AFTER_SAM_INPUT_DATASET_PATH",
+        get_env("AFTER_SAM_INPUT_DATASET_PATH", "./data/YES_NEW_afterSAM"),
     )
     output_dir = get_path(
-        "YES_MASK_OUTPUT_DIR",
-        "./data/YES_Mask_new1",
+        "MASK2_YES_MASK_OUTPUT_DIR",
+        get_env("YES_MASK_OUTPUT_DIR", "./data/YES_Mask2"),
     )
 
-    start_index = get_int("START_INDEX", 0)
-    end_index_raw = os.getenv("END_INDEX")
-    end_index = int(end_index_raw) if end_index_raw not in (None, "") else 1030
+    start_index = get_int("MASK2_START_INDEX", get_int("START_INDEX", 0))
+    end_index = get_int("MASK2_END_INDEX", get_int("END_INDEX", 1030))
 
-    buffer_size = get_int("BUFFER_SIZE", 30)
-    sleep_seconds = get_int("SLEEP_SECONDS", 15)
-    temperature = get_float("GEMINI_TEMPERATURE", 0.0)
+    buffer_size = get_int("MASK2_BUFFER_SIZE", get_int("BUFFER_SIZE", 30))
+    sleep_seconds = get_int("MASK2_SLEEP_SECONDS", get_int("SLEEP_SECONDS", 15))
+    temperature = get_float("MASK2_GEMINI_TEMPERATURE", get_float("GEMINI_TEMPERATURE", 0.0))
 
-    client = genai.Client(api_key=api_key)
+    print(
+        "🔧 当前生效参数: "
+        f"MASK2_START_INDEX={start_index}, MASK2_END_INDEX={end_index}, MASK2_BUFFER_SIZE={buffer_size}, "
+        f"MASK2_SLEEP_SECONDS={sleep_seconds}, GEMINI_MODEL={gemini_model}, "
+        f"MASK2_AFTER_SAM_INPUT_DATASET_PATH={input_dataset_path}, MASK2_YES_MASK_OUTPUT_DIR={output_dir}"
+    )
+
+    client = create_genai_client("MASK2_GEMINI_API_KEY")
 
     print("正在加载已打码数据集...")
     if not os.path.exists(input_dataset_path):

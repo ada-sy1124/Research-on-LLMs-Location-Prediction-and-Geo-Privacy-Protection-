@@ -6,8 +6,10 @@ SRC_DIR = CURRENT_DIR / "src"
 if str(SRC_DIR) not in sys.path:
     sys.path.insert(0, str(SRC_DIR))
 
-from geoai_pipeline.pipelines.from_after_sam_build_yes_mask import run
+from geoai_pipeline.pipelines.from_after_sam_build_yes_mask2 import run
 
 
 if __name__ == "__main__":
     run()
+
+ 

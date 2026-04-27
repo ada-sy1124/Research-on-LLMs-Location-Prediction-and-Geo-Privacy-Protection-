@@ -4,13 +4,13 @@ import re
 import time
 
 from datasets import load_dataset
-from google import genai
 from google.genai import types
 from tqdm import tqdm
 
-from geoai_pipeline.config import get_env, get_float, get_path
+from geoai_pipeline.config import get_env, get_float, get_int, get_path
 from geoai_pipeline.constants import GEO_PROMPT
 from geoai_pipeline.tools.dataset_io import save_chunk
+from geoai_pipeline.tools.genai_client import create_genai_client
 from geoai_pipeline.tools.geo import haversine_km
 
 
@@ -90,23 +90,30 @@ def run():
     gemini_model = get_env("GEMINI_MODEL", "gemini-3-flash-preview")
     dataset_name = get_env("DATASET_NAME", "stochastic/random_streetview_images_pano_v0.0.2")
 
-    start_index = int(get_env("FILTER_START_INDEX", get_env("START_INDEX", "1080")))
-    end_index = int(get_env("FILTER_END_INDEX", get_env("END_INDEX", "5527")))
-    batch_size = int(get_env("FILTER_BATCH_SIZE", get_env("BATCH_SIZE", "30")))
+    start_index = get_int("FILTER_START_INDEX", 1080)
+    end_index = get_int("FILTER_END_INDEX", 5527)
+    batch_size = get_int("FILTER_BATCH_SIZE", 30)
 
     yes_dir = get_path("YES_DIR", "./data/YES")
     no_dir = get_path("NO_DIR", "./data/NO")
 
-    buffer_size = int(get_env("FILTER_BUFFER_SIZE", get_env("BUFFER_SIZE", "30")))
-    dist_threshold_km = float(get_env("FILTER_DIST_THRESHOLD_KM", get_env("DIST_THRESHOLD_KM", "5")))
-    sleep_seconds = int(get_env("FILTER_SLEEP_SECONDS", get_env("SLEEP_SECONDS", "20")))
+    buffer_size = get_int("FILTER_BUFFER_SIZE", 30)
+    dist_threshold_km = get_float("FILTER_DIST_THRESHOLD_KM", 5.0)
+    sleep_seconds = get_int("FILTER_SLEEP_SECONDS", 20)
     temperature = get_float("GEMINI_TEMPERATURE", 0.0)
 
-    yes_chunk_start_id = int(get_env("FILTER_YES_CHUNK_START_ID", get_env("YES_CHUNK_START_ID", "8")))
-    no_chunk_start_id = int(get_env("FILTER_NO_CHUNK_START_ID", get_env("NO_CHUNK_START_ID", "28")))
+    yes_chunk_start_id = get_int("FILTER_YES_CHUNK_START_ID", 8)
+    no_chunk_start_id = get_int("FILTER_NO_CHUNK_START_ID", 28)
 
-    api_key = get_env("GEMINI_API_KEY", "AIzaSyCvqvwrAy3QSJ2ri-T6FzJq6wscfl4D834")
-    client = genai.Client(api_key=api_key)
+    print(
+        "🔧 当前生效参数: "
+        f"FILTER_START_INDEX={start_index}, FILTER_END_INDEX={end_index}, FILTER_BATCH_SIZE={batch_size}, "
+        f"FILTER_BUFFER_SIZE={buffer_size}, FILTER_SLEEP_SECONDS={sleep_seconds}, "
+        f"FILTER_DIST_THRESHOLD_KM={dist_threshold_km}, GEMINI_MODEL={gemini_model}, "
+        f"YES_DIR={yes_dir}, NO_DIR={no_dir}"
+    )
+
+    client = create_genai_client("GEMINI_API_KEY")
 
     os.makedirs(yes_dir, exist_ok=True)
     os.makedirs(no_dir, exist_ok=True)
